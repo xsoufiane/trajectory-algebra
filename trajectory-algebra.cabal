@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 4545e2819d53b565cf4733bc8446e60101a6bcbdce721311b852ae2c76d910aa
+-- hash: 60a984af8bee9d838eb8d599cd6e6e3b3647ae676192db4fc97dc0960fb43751
 
 name:           trajectory-algebra
 version:        0.1.0.0
@@ -27,7 +27,9 @@ source-repository head
 
 library
   exposed-modules:
+      Chronon
       Lib
+      Period
   other-modules:
       Paths_trajectory_algebra
   hs-source-dirs:
