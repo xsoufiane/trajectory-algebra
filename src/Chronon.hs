@@ -2,31 +2,51 @@ module Time where
 
 data Chronon
 
--- | Relations
+-- | Observations
 (<) :: Chronon -> Chronon -> Boolean
+betweenness :: Chronon -> Chronon -> Chronon -> Boolean
 concurrent :: Chronon -> Chronon -> Boolean
 synchronous :: Chronon -> Chronon -> Boolean
 
 -- | Precedence Laws :
-forall (t1 :: Chronon) (t2 :: Chronon) (t3 :: Chronon).
-  t1 < t2 && t2 < t3 => t1 < t3 -- ^ Transitivity
+forall (x :: Chronon).
+  not x < x -- ^ Irreflexitivity
 
-forall (t :: Chronon).
-  not t < t -- ^ Irreflexitivity
-
-forall (t1 :: Chronon) (t2 :: Chronon).
-  t1 < t2 => not t2 < t1 -- ^ Asymmetry
-
-forall (t1 :: Chronon) (t2 :: Chronon).
-  t1 < t2 || t2 < t1 || t1 == t2 -- ^ Linearity
+forall (x :: Chronon) (y :: Chronon).
+  x < y => not x < y -- ^ Asymmetry
   
--- | Concurrency, Synchronicity  Laws :
-forall (t1 :: Chronon) (t2 :: Chronon).
-  t1 `concurrent` t2 = not t1 < t2 && not t2 < t1 -- ^ concurrency
-forall (t1 :: Chronon) (t2 :: Chronon).
-  t1 `synchronous` t2 = (forall (t :: Chronon). t1 < t => t2 < t) && not t1 < t2 -- ^ Synchronicity
-forall (t1 :: Chronon) (t2 :: Chronon).
-  t1 `synchronous` t2 = (forall (t :: Chronon). t1 < t => t2 < t) && not t1 < t2 -- ^ Synchronicity
+forall (x :: Chronon) (y :: Chronon) (z :: Chronon).
+  x < y && y < z => x < z -- ^ Transitivity
+
+forall (x :: Chronon) (y :: Chronon).
+  x < y || y < x || x == y -- ^ Linearity
+  
+-- | Betweenness  Laws :
+forall (x :: Chronon) (y :: Chronon) (z :: Chronon).
+  betweenness(x, y, z) <=> (y < x &&  x < z)  || (z < x && x < y)
+  
+-- | Concurrency  Laws :
+forall (x :: Chronon).
+  x `concurrent` x -- ^ reflexitivity
+
+forall (x :: Chronon) (y :: Chronon).
+  x `concurrent` y <=> y `concurrent` x  -- ^ Symmetry
+  
+forall (x :: Chronon) (y :: Chronon).
+  x `concurrent` y = not x < y && not y < x
+  
+-- | Synchronicity  Laws :
+forall (x :: Chronon).
+  x `synchronous` x -- ^ reflexitivity
+  
+forall (x :: Chronon) (y :: Chronon).
+  x `synchronous` y <=> y `synchronous` x  -- ^ Symmetry
+  
+forall (x :: Chronon) (y :: Chronon) (z :: Chronon).
+  x `synchronous` y && y `synchronous` z => x `synchronous` z -- ^ Transitivity
+  
+forall (x :: Chronon) (y :: Chronon).
+  x `synchronous` y = (forall (t :: Chronon). x < t => y < t) && not t1 < t2 -- ????
 
 
 
