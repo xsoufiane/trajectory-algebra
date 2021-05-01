@@ -1,6 +1,4 @@
 module Main where
 
-import Lib
-
 main :: IO ()
-main = f
+main = putStrLn "Here be dragons...."
