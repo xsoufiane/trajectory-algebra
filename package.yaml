@@ -27,19 +27,22 @@ library:
 
 executables:
   trajectory-algebra-exe:
-    main:                Main.hs
-    source-dirs:         app
+    main: Main.hs
+    source-dirs: app
     ghc-options:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
     - trajectory-algebra
+    - quickspec
 
 tests:
   trajectory-algebra-test:
-    main:                Spec.hs
-    source-dirs:         test
+    main: Spec.hs
+    source-dirs:
+    - test/spec
+    - test/common
     ghc-options:
     - -threaded
     - -rtsopts
@@ -47,3 +50,17 @@ tests:
     dependencies:
     - trajectory-algebra
     - QuickCheck
+    - quickcheck-classes
+  trajectory-algebra-inference:
+    main: Spec.hs
+    source-dirs:
+    - test/infer
+    - test/common
+    ghc-options:
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
+    dependencies:
+      - trajectory-algebra
+      - QuickCheck
+      - quickspec

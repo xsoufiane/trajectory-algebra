@@ -1,9 +1,23 @@
-module Chronon where
+module Chronon
+    ( -- * Types 
+      Chronon(..)
+    
+     -- * Constructors
+    , chronon
+    ) where
+
+import Prelude hiding ((<))
+
+import LinearOrder
+
+----------------------------------------------------------------------    
   
-type Chronon = Int
+newtype Chronon a = Chronon a deriving (Show)
 
-(===) :: Chronon -> Chronon -> Bool -- ^ Identity
-(===) = (==)
+instance LinearOrder a => LinearOrder (Chronon a) where
+  Chronon x < Chronon y = x < y 
+  Chronon x === Chronon y = x === y 
 
-betweenness :: Chronon -> Chronon -> Chronon -> Bool
-betweenness b a c = a < b && b < c
+-- | constructors 
+chronon :: LinearOrder a => a -> Chronon a
+chronon = Chronon
