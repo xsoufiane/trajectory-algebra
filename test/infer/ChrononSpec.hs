@@ -2,21 +2,19 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module ChrononSpec where
+module ChrononSpec (sig) where
 
-import Data.Proxy (Proxy(..))
 import Prelude hiding ((<), (>))
-import Test.QuickCheck hiding ((===))
 import QuickSpec 
 
 import Chronon
-import Test.Chronon
+import Test.Chronon ()
 import LinearOrder
 
 --------------------------------------------------------------------------
 
 instance (Ord a) => Observe () a (Chronon a) where
-  observe _ (Chronon x) = x
+  observe _ x = unChronon x
   
 sig = bg <> cons
   
