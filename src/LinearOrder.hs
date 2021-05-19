@@ -1,26 +1,9 @@
-module LinearOrder
-    ( -- * Types
-      LinearOrder(..)
-    ) where
+module LinearOrder where
 
-import Prelude hiding ((<))
-import qualified Prelude as P ((<))
+import StrictPartialOrder
 
 --------------------------------------------
 
--- + TypeClass  
-class LinearOrder a where
-  (<) :: a -> a -> Bool -- ^ Precedence
-
-  (>) :: a -> a -> Bool -- ^ After
-  x > y = y < x
-
+class StrictPartialOrder a => LinearOrder a where
   (===) :: a -> a -> Bool -- ^ Identity
-
-  betweenness :: a -> a -> a -> Bool
-  betweenness x y z = y < x && x < z || z < x && x < y
   
--- + Instances  
-instance LinearOrder Int where
-  (<) = (P.<)
-  (===) = (==)

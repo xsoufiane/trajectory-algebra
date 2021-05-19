@@ -1,20 +1,21 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# OPTIONS_GHC -fno-warn-orphans #-}
 
 module ChrononSpec (sig) where
 
 import Prelude hiding ((<), (>))
 import QuickSpec 
 
-import Chronon
-import Test.Chronon ()
+import Test.Chronon
 import LinearOrder
+import StrictPartialOrder
 
 --------------------------------------------------------------------------
 
-instance (Ord a) => Observe () a (Chronon a) where
-  observe _ x = unChronon x
+instance Observe () Int (Chronon Int) where
+  observe _ (Chronon x) = x
   
 sig = bg <> cons
   
@@ -22,7 +23,6 @@ cons = signature
   [ con "<" ((<) :: Chronon Int -> Chronon Int -> Bool)
   , con ">" ((>) :: Chronon Int -> Chronon Int -> Bool)
   , con "===" ((===) :: Chronon Int -> Chronon Int -> Bool)
-  , con "betweenness" (betweenness :: Chronon Int -> Chronon Int -> Chronon Int -> Bool)
   , monoTypeObserve (Proxy :: Proxy (Chronon Int)) 
   ]
   

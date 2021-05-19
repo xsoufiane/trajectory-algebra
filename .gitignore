@@ -3,5 +3,5 @@
 stack.yaml.lock
 trajectory-algebra.cabal
 trajectory-algebra.iml
-spec
+/spec
 TODO.md

@@ -1,23 +1,8 @@
-module Chronon
-    ( -- * Types
-      Chronon(unChronon)
+{-# LANGUAGE PolyKinds #-}
+{-# LANGUAGE TypeFamilies #-}
 
-     -- * Constructors
-    , chronon
-    ) where
-
-import Prelude hiding ((<))
-
-import LinearOrder
+module Chronon where
 
 ----------------------------------------------------------------------    
-  
-newtype Chronon a = Chronon { unChronon :: a } deriving (Show)
 
-instance LinearOrder a => LinearOrder (Chronon a) where
-  Chronon x < Chronon y = x < y 
-  Chronon x === Chronon y = x === y
-
--- | constructors 
-chronon :: LinearOrder a => a -> Chronon a
-chronon = Chronon
+data family Chronon (a :: k)
