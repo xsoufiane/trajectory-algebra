@@ -1,4 +1,8 @@
+import Test.Tasty
+
 import qualified ChrononSpec
 
+-----------------------------------
+
 main :: IO ()
-main = ChrononSpec.runSpec
+main = defaultMain ChrononSpec.spec

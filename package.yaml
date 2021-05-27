@@ -35,7 +35,6 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - trajectory-algebra
-    - quickspec
 
 tests:
   trajectory-algebra-test:
@@ -51,6 +50,10 @@ tests:
     - trajectory-algebra
     - QuickCheck
     - quickcheck-classes
+    - smallcheck
+    - tasty
+    - tasty-quickcheck
+    - tasty-smallcheck
   trajectory-algebra-inference:
     main: Spec.hs
     source-dirs:

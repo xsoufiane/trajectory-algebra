@@ -5,4 +5,4 @@ module Chronon where
 
 ----------------------------------------------------------------------    
 
-data family Chronon (a :: k)
+data family Chronon :: k

@@ -1,41 +1,36 @@
 {-# LANGUAGE ConstraintKinds #-}
+{-# LANGUAGE ImplicitParams #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module StrictPartialOrderSpec (laws) where
 
 import Data.Proxy (Proxy)
 import Prelude hiding ((<), (>))
-import Test.QuickCheck hiding ((===))
-import Test.QuickCheck.Classes  
+import Test.QuickCheck hiding ((===)) 
     
 import StrictPartialOrder  
 
 --------------------------------------------
 
-type Constraints a = (Arbitrary a, StrictPartialOrder a, Show a)
-type PropertySig a = Proxy a -> Property
+type Constraints a = (?proxy :: Proxy a, Arbitrary a, StrictPartialOrder a, Show a)
 
 -- | Precedence Laws :
-prop_precedenceIrreflexive :: forall a. Constraints a => PropertySig a
-prop_precedenceIrreflexive _ = property (\(x :: a) ->  not $ x < x)
+prop_precedenceIrreflexive :: forall a. Constraints a => Property
+prop_precedenceIrreflexive = property (\(x :: a) ->  not $ x < x)
 
-prop_precedenceAsymmetric :: forall a. Constraints a => PropertySig a
-prop_precedenceAsymmetric _ =
-  forAll condition $ \(x, y) -> not $ y < x
-  where
-    condition :: Gen (a, a)
-    condition = suchThat arbitrary $ uncurry (<)
+prop_precedenceAsymmetric :: forall a. Constraints a => Property
+prop_precedenceAsymmetric = forAll condition $ \(x, y) -> not $ y < x
+  where condition :: Gen (a, a)
+        condition = suchThat arbitrary $ uncurry (<)
 
-prop_precedenceTransitive :: forall a. Constraints a => PropertySig a
-prop_precedenceTransitive _ =
-  forAll gen $ \(x, _, z) -> x < z
-  where
-    gen :: Gen (a, a, a)
-    gen = suchThat (arbitrary :: Gen (a, a, a)) $ \(x, y, z) -> x < y && y < z
+prop_precedenceTransitive :: forall a. Constraints a => Property
+prop_precedenceTransitive = forAll gen $ \(x, _, z) -> x < z
+  where gen :: Gen (a, a, a)
+        gen = suchThat (arbitrary :: Gen (a, a, a)) $ \(x, y, z) -> x < y && y < z
 
-laws :: (Arbitrary a, StrictPartialOrder a, Show a) => Proxy a -> Laws
-laws p = Laws "StrictPartialOrder"
-  [ ("Precedence Irreflexive", prop_precedenceIrreflexive p)
-  , ("Precedence Asymmetric", prop_precedenceAsymmetric p)
-  , ("Precedence Transitive", prop_precedenceTransitive p)
-  ]
+laws :: Constraints a => [(String, Property)]
+laws =
+    [ ("Precedence Irreflexive", prop_precedenceIrreflexive)
+    , ("Precedence Asymmetric", prop_precedenceAsymmetric)
+    , ("Precedence Transitive", prop_precedenceTransitive)
+    ]
