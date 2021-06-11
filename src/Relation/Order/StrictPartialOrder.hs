@@ -1,10 +1,9 @@
-module StrictPartialOrder where
+module Relation.Order.StrictPartialOrder where
 
 import Prelude hiding ((<))
 
 --------------------------------------------
 
--- + TypeClass
 class StrictPartialOrder a where
   (<) :: a -> a -> Bool -- ^ Precedence
 

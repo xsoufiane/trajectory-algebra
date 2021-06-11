@@ -1,7 +1,7 @@
 {-# LANGUAGE PolyKinds #-}
 {-# LANGUAGE TypeFamilies #-}
 
-module Chronon where
+module Data.Chronon where
 
 ----------------------------------------------------------------------    
 

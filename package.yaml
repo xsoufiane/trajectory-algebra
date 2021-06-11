@@ -21,6 +21,7 @@ description:         Please see the README on GitHub at <https://github.com/gith
 
 dependencies:
 - base >= 4.7 && < 5
+- singletons
 
 library:
   source-dirs: src
@@ -37,7 +38,7 @@ executables:
     - trajectory-algebra
 
 tests:
-  trajectory-algebra-test:
+  trajectory-algebra-spec:
     main: Spec.hs
     source-dirs:
     - test/spec
