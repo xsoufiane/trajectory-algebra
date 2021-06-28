@@ -1,11 +1,13 @@
 import Test.Tasty
 
-import qualified Relation.RelationSpec as RelationSpec
+import qualified Data.ChrononSpec as ChrononSpec
+import qualified Data.PeriodSpec as PeriodSpec
 
 -----------------------------------
 
 main :: IO ()
 main = defaultMain $ testGroup "Trajectory Algebra Spec"
-    [ RelationSpec.spec
+    [ ChrononSpec.spec
+    , PeriodSpec.spec
     ]
-    
+

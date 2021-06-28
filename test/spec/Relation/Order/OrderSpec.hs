@@ -4,7 +4,7 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module Relation.Order.OrderSpec (spec) where
+module Relation.Order.OrderSpec where
 
 import Data.Proxy (Proxy(..))
 --import Test.SmallCheck.Series
@@ -17,7 +17,6 @@ import qualified Prelude as P ((<), (<=))
 
 --import Finity
 import Data.Chronon
-import Relation.ChrononImpl
 import Relation.Order.CyclicOrder
 import Relation.Order.LinearOrder
 import Relation.Order.PartialCyclicOrder
@@ -36,22 +35,6 @@ import qualified Relation.Order.TotalOrderSpec as TotalOrder
 
 --------------------------------------------------------
 
--- | Instances
-instance StrictPartialOrder (Chronon Int) where
-  Chronon x < Chronon y = (P.<) x y    
-  
-instance LinearOrder (Chronon Int)  
-
-instance PartialOrder (Chronon Int) where
-  Chronon x <= Chronon y = (P.<=) x y    
-  
-instance TotalOrder (Chronon Int)    
-  
-instance PartialCyclicOrder (Chronon Int) where
-    cycle x y z = (x < y && y < z) || (y < z && z < x) || (z < x && x < y)
-
-instance CyclicOrder (Chronon Int)
-
 --instance Begin (Chronon Int)
 --instance End (Chronon Int)
 --instance UniqueBegin (Chronon Int)
@@ -59,20 +42,6 @@ instance CyclicOrder (Chronon Int)
 
 --instance Monad m => Serial m (Chronon Int) where
 --    series = Chronon <$> series
-
--- | specs
-spec :: TestTree
-spec = testGroup "Order Spec" [ laws ] --, smallChecks ]
-
-laws :: TestTree
-laws = testGroup "Laws"
-    [ QC.testProperties "StrictPartialOrder" $ StrictPartialOrder.laws (Proxy :: Proxy (Chronon Int))
-    , QC.testProperties "LinearOrder" $ LinearOrder.laws (Proxy :: Proxy (Chronon Int))
-    , QC.testProperties "PartialOrder" $ PartialOrder.laws (Proxy :: Proxy (Chronon Int))
-    , QC.testProperties "TotalOrder" $ TotalOrder.laws (Proxy :: Proxy (Chronon Int))
-    , QC.testProperties "PartialCyclicOrder" $ PartialCyclicOrder.laws (Proxy :: Proxy (Chronon Int))
-    , QC.testProperties "CyclicOrder" $ CyclicOrder.laws (Proxy :: Proxy (Chronon Int))
-    ]
 
 --smallChecks :: TestTree
 --smallChecks =
