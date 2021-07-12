@@ -7,84 +7,145 @@
 {-# LANGUAGE StandaloneKindSignatures #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE UndecidableInstances #-}
 
-module Data.Period 
-    ( -- * Data Types
-      Period
-    , SPeriodType(..)
-    , PeriodType(..)
-    , RefinedPeriod 
-       
-      -- * Constructor
-    , period
-    , periodTH
-    ) where
+module Data.Period where
+--    ( -- * Data Types
+--      Period
+--    , SPeriodType(..)
+--    , PeriodType(..)
+--    , RefinedPeriod 
+--       
+--      -- * Constructors
+--    , period
+--    --, periodTH
+--    
+--      -- * Observations
+----    , (===)
+----    , PeriodOps(..)
+----    , PeriodEqOps(..)
+--    ) where
+--
+--import Control.Exception.Base
+--import Data.Data
+--import Data.Singletons.TH
+--import Language.Haskell.TH.Syntax
+--import Refined
+--
+--import Data.Chronon (Chronon, ChrononOps)
+--import qualified Data.Chronon as C (ChrononOps((<)))
+--
+----import Relation.Identity
+--
+--import Prelude hiding ((<), (==), (<=))
+----import qualified Prelude as Pr ((==))
+----
+----import Data.Chronon (Chronon)
+----
+----import Relation.Order.Precedence
+----import qualified Relation.Order.Precedence as P ((<))
+----
+----import Relation.Order.PrecedenceEq
+----import qualified Relation.Order.PrecedenceEq as PEq ((<=))
+--
+-----------------------------------------------------------
+--
+--data PeriodType = Open | Closed | RightClosed | LeftClosed
+--
+-- $(genSingletons [''PeriodType])
+--
+--data Period (c :: PeriodType) t = Period { inf :: Chronon t, sup :: Chronon t }
+-- --deriving (Lift, Show)
+--
+---- | Exceptions
+--data InvalidPeriod = InvalidPeriod deriving (Show)
+--
+--instance Exception InvalidPeriod where
+--    displayException _ = "Period Bounds are Invalid!!!" 
+--
+---- | Refinement
+--data ValidPeriodBounds deriving (Typeable)
+--
+--instance ChrononOps Chronon => Predicate ValidPeriodBounds (Period c t) where
+--    validate _ (Period x y)
+--        | (C.<) x y = throwRefineSomeException 
+--            (typeRep (Proxy :: Proxy ValidPeriodBounds)) 
+--            (SomeException InvalidPeriod)
+--        | otherwise = Nothing 
+--
+--type RefinedPeriod c t = Refined ValidPeriodBounds (Period c t)
+--
+---- | Smart Constructor
+--period 
+--    :: Predicate ValidPeriodBounds (Period c t)
+--    => SPeriodType c 
+--    -> Chronon t
+--    -> Chronon t
+--    -> Either RefineException (RefinedPeriod c t)
+--period _ x y = refine $ Period x y
 
-import Data.Singletons.TH
-import Language.Haskell.TH.Syntax
-import Prelude hiding ((<), (<=), (>=))
-import Refined
+--periodTH
+--    :: (PrecedenceEq Chronon, Lift Chronon)
+--    => SPeriodType c
+--    -> Chronon 
+--    -> Chronon
+--    -> Q (TExp (RefinedPeriod c))
+--periodTH _ x y = refineTH $ Period x y
 
-import Relation.Order.StrictPartialOrder as SP
-import Relation.Order.PartialOrder as P
-import Control.Exception.Base
-import Data.Data
+-- | Observations
+--class ChrononOps Chronon => PeriodOps c t where 
+--    (<) :: Period c t -> Period c t -> Bool
+--    
+--    (>) :: Period c t -> Period c t -> Bool
+--    x > y = y < x
+--    
+--    includedIn :: Period c t -> Period c t -> Bool
+--    includedIn (Period b c) (Period a d) = (C.<) a b && (C.<) c d
 
----------------------------------------------------------
+-- 
+-- 
+--instance Identity Chronon => Identity (Period c) where
+--    Period a b === Period a' b' = (===) a a' && (===) b b'
+--
+--(<) :: PrecedenceEq Chronon => Period 'Open -> Period 'Open -> Bool
+--Period _ x < Period y _ = (PEq.<=) x y
 
-data PeriodType = Open | Closed | RightClosed | LeftClosed
 
-$(genSingletons [''PeriodType])
-
-data Period (c :: PeriodType) t = Period { inf :: t, sup :: t } deriving (Lift, Show)
-
--- | Exceptions
-data InvalidPeriod = InvalidPeriod deriving (Show)
-
-instance Exception InvalidPeriod where
-    displayException _ = "Period Bounds are Invalid!!!" 
-
--- | Refinement
-data ValidPeriodBounds deriving (Typeable)
-
-instance PartialOrder t => Predicate ValidPeriodBounds (Period c t) where
-    validate _ (Period x y)
-        | x >= y = throwRefineSomeException 
-            (typeRep (Proxy :: Proxy ValidPeriodBounds)) 
-            (SomeException InvalidPeriod)
-        | otherwise = Nothing 
-
-type RefinedPeriod c t = Refined ValidPeriodBounds (Period c t)
-
--- | Smart Constructor
-period 
-    :: Predicate ValidPeriodBounds (Period c t)
-    => SPeriodType c 
-    -> t 
-    -> t
-    -> Either RefineException (RefinedPeriod c t)
-period _ x y = refine $ Period x y
-
-periodTH
-    :: (PartialOrder t, Lift t)
-    => SPeriodType c
-    -> t 
-    -> t
-    -> Q (TExp (RefinedPeriod c t))
-periodTH _ x y = refineTH $ Period x y
+---- | Open Periods    
+--instance PrecedenceEq t => Precedence (Period 'Open t) where
+--    Period _ x < Period y _ = (PEq.<=) x y
     
--- | StrictPartialOrder Instances
-instance PartialOrder t => StrictPartialOrder (Period 'Open t) where
-  Period _ x < Period y _ = (P.<=) x y
+-- | Open Periods 
 
-instance PartialOrder t => StrictPartialOrder (Period 'Closed t) where
-  Period _ x < Period y _ = (SP.<) x y
-
-instance PartialOrder t => StrictPartialOrder (Period 'RightClosed t) where
-  Period _ x < Period y _ = (P.<=) x y
-
-instance PartialOrder t => StrictPartialOrder (Period 'LeftClosed t) where
-  Period _ x < Period y _ = (P.<=) x y
+--class (Precedence t) => PeriodOps c t where
+--    includedIn :: Period c t -> Period c t -> Bool
+--    includedIn (Period b c) (Period a d) = (P.<) a b && (P.<) c d
+--    
+--instance Eq t => Eq (Period c t) where
+--    Period a b == Period a' b' = (Pr.==) a a' && (Pr.==) b b'
+--   
+--class (PrecedenceEq t, PeriodOps c t) => PeriodEqOps c t where
+--    (<=) :: Period c t -> Period c t -> Bool
+--    x <= y = x < y || (Pr.==) x y
+--   
+--    includedInOrEq :: Period c t -> Period c t -> Bool
+--    includedInOrEq (Period b c) (Period a d) = (PEq.<=) a b && (PEq.<=) c d        
+--
+-- | Ops Instances
+--instance Precedence t => PeriodOps 'Open t where
+--  Period _ x < Period y _ = (PEq.<=) x y
+--  
+--instance PrecedenceEq t => PeriodOps 'Open t where
+--  Period _ x < Period y _ = (PEq.<=) x y
+--
+--instance PrecedenceEq t => PeriodOps 'Closed t where
+--  Period _ x < Period y _ = (P.<) x y
+--
+--instance PrecedenceEq t => PeriodOps 'RightClosed t where
+--  Period _ x < Period y _ = (PEq.<=) x y
+--
+--instance PrecedenceEq t => PeriodOps 'LeftClosed t where
+--  Period _ x < Period y _ = (PEq.<=) x y    
 
 ---- | PeriodOps
 --class PeriodOps (c :: PeriodType) where

@@ -2,14 +2,14 @@
 {-# LANGUAGE ImplicitParams #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module Relation.IdentitySpec where
+module Test.Relation.Identity.Laws (laws) where
 
 import Data.Proxy (Proxy)
 import Test.QuickCheck hiding ((===))
 
-import Relation.Identity
+import Test.Relation.Identity
 
--------------------------------------------------------
+---------------------------------------------
 
 type Constraints a = (?proxy :: Proxy a, Arbitrary a, Identity a, Show a) 
   
@@ -25,6 +25,7 @@ prop_transitive = forAll gen (\(x, _, z) -> x === z)
   where gen :: Gen (a, a, a) 
         gen = (\x -> (x, x, x)) <$> (arbitrary :: Gen a)
 
+---------------------------
 
 laws :: (Arbitrary a, Identity a, Show a) => Proxy a -> [(String, Property)]
 laws proxy =

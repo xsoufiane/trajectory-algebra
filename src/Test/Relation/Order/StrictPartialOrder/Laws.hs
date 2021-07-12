@@ -2,15 +2,15 @@
 {-# LANGUAGE ImplicitParams #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module Relation.Order.StrictPartialOrderSpec (laws) where
+module Test.Relation.Order.StrictPartialOrder.Laws (laws) where
 
 import Data.Proxy (Proxy)
 import Prelude hiding ((<), (>))
 import Test.QuickCheck
 
-import Relation.Order.StrictPartialOrder
+import Test.Relation.Order.StrictPartialOrder  
 
---------------------------------------------
+---------------------------------------------------------------------
 
 type Constraints a = (?proxy :: Proxy a, Arbitrary a, StrictPartialOrder a, Show a)
 
@@ -28,6 +28,7 @@ prop_transitive = forAll gen $ \(x, _, z) -> x < z
   where gen :: Gen (a, a, a)
         gen = suchThat (arbitrary :: Gen (a, a, a)) $ \(x, y, z) -> x < y && y < z
 
+--------------------------------
 
 laws :: (Arbitrary a, StrictPartialOrder a, Show a) => Proxy a -> [(String, Property)]
 laws proxy =
