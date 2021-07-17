@@ -2,7 +2,13 @@
 {-# LANGUAGE ImplicitParams #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module Test.Relation.Order.StrictPartialOrder.Laws (laws) where
+module Test.Relation.Order.StrictPartialOrder.Laws 
+    ( -- * Laws
+      laws
+      
+      -- * Class
+    , StrictPartialOrder(..)
+    ) where
 
 import Data.Proxy (Proxy)
 import Prelude hiding ((<), (>))

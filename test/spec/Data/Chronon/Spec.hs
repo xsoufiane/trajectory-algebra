@@ -1,9 +1,6 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
-{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE DeriveAnyClass #-}
 
 module Data.Chronon.Spec (spec) where
 
@@ -15,15 +12,14 @@ import Test.Tasty.QuickCheck as QC hiding ((===))
 import Prelude hiding ((<), cycle)
 import qualified Prelude as P ((<), (==))
 
-import Data.Chronon (Chronon, ChrononOps((<)))
-import qualified Data.Chronon as Chronon ((<), (<=), (===), _cycle)
+import Data.Chronon (Chronon, ChrononOps((<)), CyclicChronon(cycle))
+import qualified Data.Chronon as Chronon ((<), (<=), (===), cycle)
 
 import Test.Relation.Identity (Identity((===)))
 import qualified Test.Relation.Identity.Laws as Identity
 
 import Test.Relation.Order.StrictPartialOrder (StrictPartialOrder)
-import qualified Test.Relation.Order.StrictPartialOrder (StrictPartialOrder((<)))
-import qualified Test.Relation.Order.StrictPartialOrder.Laws as StrictPartialOrder
+import qualified Test.Relation.Order.StrictPartialOrder.Laws as StrictPartialOrder (laws, (<))
 
 import Test.Relation.Order.LinearOrder (LinearOrder)
 import qualified Test.Relation.Order.LinearOrder.Laws as LinearOrder
@@ -47,7 +43,9 @@ data instance Chronon = Chronon Int deriving (Eq, Show)
 instance ChrononOps Chronon where
      Chronon x < Chronon y = (P.<) x y
      Chronon x === Chronon y = (P.==) x y
-     _cycle x y z = x < y && y < z || y < z && z < x || z < x && x < y
+     
+instance CyclicChronon Chronon where     
+     cycle x y z = x < y && y < z || y < z && z < x || z < x && x < y
      
 -- | Instances
 instance Arbitrary Chronon where
@@ -62,7 +60,7 @@ instance StrictPartialOrder Chronon where
 instance LinearOrder Chronon 
 
 instance PartialCyclicOrder Chronon where
-    cycle = Chronon._cycle
+    cycle = Chronon.cycle
 
 instance CyclicOrder Chronon
 

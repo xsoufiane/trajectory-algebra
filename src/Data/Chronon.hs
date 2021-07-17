@@ -1,15 +1,14 @@
-{-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE FunctionalDependencies #-}
+{-# LANGUAGE ConstrainedClassMethods #-}
 {-# LANGUAGE PolyKinds #-}
 {-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE DataKinds #-}
 
 module Data.Chronon
     ( -- * Types  
       Chronon
              
       -- * Observations
-    , ChrononOps((<), (>), (===), (<=), (>=), _cycle)
+    , ChrononOps((<), (>), (===), (<=), (>=))
+    , CyclicChronon(cycle)
     ) where
 
 import Prelude hiding ((<), (<=))  
@@ -32,5 +31,6 @@ class ChrononOps t where
 
     (>=) :: Eq t => t -> t -> Bool
     x >= y = y <= x
-
-    _cycle :: t -> t -> t -> Bool
+    
+class CyclicChronon t where    
+    cycle :: t -> t -> t -> Bool
